@@ -1,19 +1,18 @@
 (function() {
-    angular.module("usersApp").config(["$routeProvider", "$locationProvider", "$urlRouterProvider",  function($routeProvider, $locationProvider) {
+    angular.module("usersApp").config(["$routeProvider", "$locationProvider",  function($routeProvider, $locationProvider) {
         $locationProvider.html5Mode(true);
-        $urlRouterProvider.otherwise('/error');
-
-    $stateProvider
-        .state('home', {
-            url: '/',
+        $routeProvider
+            .when("/", {
                 templateUrl: "./app/views/users.html",
                 controller: "userListController"
-        })
-        .state('error', {
-            url: '/error',
-            templateUrl: './app/views/error-page.html',
-            controller: 'errorController'
-        });
+            })
+            .when('/error', {
+                templateUrl: './app/views/error-page.html',
+                controller: 'errorController'
+            })
+            .otherwise({
+             redirectTo: "/"
+            });
     }]);
 }
 )();
