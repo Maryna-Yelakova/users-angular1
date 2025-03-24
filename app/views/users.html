@@ -1,0 +1,137 @@
+
+<div class="container">
+    <div class="user-list">
+        <button ng-show="!editMode" ng-click="setCreateMode()" class="create-user-button">Create User</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>USERNAME</th>
+                    <th>FIRST NAME</th>
+                    <th>LAST NAME</th>
+                    <th>EMAIL</th>
+                    <th>TYPE</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr
+                    ng-repeat="user in users"
+                    ng-click="selectUser(user)"
+                    ng-class="{'active': user.username === selectedUser.username}">
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.first_name }}</td>
+                    <td>{{ user.last_name }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.user_type }}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="user-form" ng-if="createMode || editMode">
+        <div class="form-title">
+            <h4 ng-if="createMode">Create new user</h6>
+            <h4 ng-if="editMode">{{selectedUser.first_name + " " + selectedUser.last_name}}</h6>
+            <button class="close-button" ng-click="closeForm()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><defs><style>.a{fill:#a4a4b5;}.b{fill:none;}</style></defs><path class="a" d="M19,6.41,17.59,5,12,10.59,6.41,5,5,6.41,10.59,12,5,17.59,6.41,19,12,13.41,17.59,19,19,17.59,13.41,12Z"/><path class="b" d="M0,0H24V24H0Z"/></svg>
+            </button>
+        </div>
+        <form name="userForm" ng-submit="createUser()" novalidate>
+            <div class="form-group">
+                <label>Username*</label>
+                <input type="text"
+                        ng-model="newUser.username" 
+                        required
+                        name="username"
+                        ng-class="{'error': userForm.username.$error.required && userForm.username.$touched}"/>
+                <span class="error-message" ng-show="userForm.username.$error.required && userForm.username.$touched" class="error-message">Username is required</span>
+            </div>
+            <div class="form-group">
+                <label>First Name*</label>
+                <input
+                    type="text"
+                    ng-model="newUser.first_name"
+                    required
+                    ng-class="{'error': userForm.first_name.$error.required && userForm.first_name.$touched}"
+                    name="first_name"/>
+                <span class="error-message" ng-show="userForm.first_name.$error.required && userForm.first_name.$touched" class="error-message">First name is required</span>
+            </div>
+            <div class="form-group">
+                <label>Last Name*</label>
+                <input
+                    type="text"
+                    ng-model="newUser.last_name"
+                    required 
+                    ng-class="{'error': userForm.last_name.$error.required && userForm.last_name.$touched}"
+                    name="last_name"/>
+                <span class="error-message" ng-show="userForm.last_name.$error.required && userForm.last_name.$touched" class="error-message">Last name is required</span>
+            </div>
+           <div class="form-group">
+                <label>
+                    Email*
+                    <input
+                        ng-class="{'error': userForm.email.$error.pattern && userForm.email.$touched || userForm.email.$error.required && userForm.email.$touched }"
+                        ng-model='newUser.email'
+                        ng-pattern="useremail"
+                        name="email"
+                        type='email'
+                        required>
+                </label>
+              <span class="error-message" ng-show="userForm.email.$error.required && userForm.email.$touched && !userForm.email.$error.pattern" class="error-message">Email is required</span> 
+              <span class="error-message" ng-show="userForm.email.$error.pattern && userForm.email.$touched" class="error-message">Please, enter valid email</span>
+            </div>
+            <div class="form-group">
+                <label>Type*</label>
+                <select
+                    name="user_type"
+                    ng-model="newUser.user_type"
+                    required 
+                    ng-options="type for type in userTypes">
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Password*</label>
+                <input
+                    type="password"
+                    ng-class="{'error': userForm.password.$error.required && userForm.password.$touched}"
+                    ng-model="newUser.password"
+                    required
+                    name="password"/>
+                 <span class="error-message" ng-show="userForm.password.$touched && userForm.password.$error.required">Passwords is required</span>
+            </div>
+            <div class="form-group">
+                <label>Repeat Password*</label>
+                <input 
+                    type="password" 
+                    password-match="newUser.password"
+                    name="repeat_password"
+                    class="ng-pristine ng-untouched ng-valid ng-isolate-scope"
+                    ng-class="{'error': userForm.repeat_password.$error.required && userForm.repeat_password.$touched || userForm.repeat_password.$error.passwordMatch && userForm.repeat_password.$touched}"
+                    ng-model="newUser.repeat_password" 
+                    required />
+                <span class="error-message" ng-show="userForm.repeat_password.$error.required && userForm.repeat_password.$touched">Repeat password is required</span>
+                <span class="error-message" ng-show="userForm.repeat_password.$touched && userForm.repeat_password.$error.passwordMatch">Passwords do not match.</span>
+            </div>
+            <div ng-if="createMode" class="create-action-buttons">
+              <button class="save-button" type="submit">Create</button>
+            </div>
+            <div ng-if="editMode" class="edit-action-buttons">
+              <button class="delete-button" ng-click="deleteUser()">Delete</button>
+              <button class="save-button" ng-click="$event.preventDefault();updateUser()">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+<flash-message
+    name="flash-fixed"
+    duration="5000"
+    show-close="true"
+></flash-message> 
